@@ -2,6 +2,7 @@ from django.contrib import admin
 from client.models import Client
 from django.utils.html import format_html
 from django.urls import reverse
+from project.models import Project
 
 
 class BaseModelAdmin(admin.ModelAdmin):
@@ -52,8 +53,21 @@ class BaseModelAdmin(admin.ModelAdmin):
         return result
 
 
+class ProjectInstanceInline(admin.TabularInline):
+    model = Project
+    extra = 0
+    readonly_fields = ['client', 'title', 'description', 'start_date', 'release_date', 'status']
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 class ClientAdmin(BaseModelAdmin):
     fields = ['title', 'description', 'get_projects']
+    inlines = [ProjectInstanceInline]
     readonly_fields = ('get_projects',)
     # fieldsets = (
     #     (None, {
