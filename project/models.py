@@ -6,16 +6,16 @@ from django.contrib.auth.models import User
 class Project(models.Model):
     STATUS_CHOICES = [
         ('p', 'Planned'),
-        ('i', 'In_progress'),
+        ('d', 'Doing'),
         ('t', 'Testing'),
         ('r', 'Release'),
     ]
 
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='project')
-    title = models.CharField(max_length=50, verbose_name='Название проекта')
+    title = models.CharField(max_length=50, verbose_name='Name of project')
     description = models.TextField()
-    start_date = models.DateField(verbose_name='Начало проекта')
-    release_date = models.DateField(verbose_name='Конец проекта')
+    start_date = models.DateField(verbose_name='Start')
+    release_date = models.DateField(verbose_name='Finish')
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
 
     def __str__(self):
@@ -24,8 +24,8 @@ class Project(models.Model):
 
 class Task(models.Model):
     STATUS_CHOICES = [
-        ('t', 'To_do'),
-        ('i', 'In_progress'),
+        ('o', 'Do'),
+        ('i', 'Doing'),
         ('t', 'Testing'),
         ('d', 'Done'),
     ]
@@ -39,12 +39,12 @@ class Task(models.Model):
     ]
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='task')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task', verbose_name='Кто выполняет задачу')
-    title = models.CharField(max_length=50, verbose_name='Название задачи')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task', verbose_name='Appointed by')
+    title = models.CharField(max_length=50, verbose_name='Name of task')
     description = models.TextField()
-    start_datetime = models.DateTimeField(verbose_name='Начало выполнения задачи')
-    release_datetime = models.DateTimeField(verbose_name='Конец выполнения задачи')
-    total_time = models.FloatField(verbose_name='Общее время выполнения задачи в часах')
+    start_datetime = models.DateTimeField(verbose_name='Start task')
+    release_datetime = models.DateTimeField(verbose_name='Finish task')
+    total_time = models.FloatField(verbose_name='Total time complete')
     type = models.CharField(max_length=1, choices=TYPE_CHOICES)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
 
@@ -54,8 +54,8 @@ class Task(models.Model):
 
 class CommentTask(models.Model):
     STATUS_CHOICES = [
-        ('t', 'To_do'),
-        ('i', 'In_progress'),
+        ('o', 'Do'),
+        ('i', 'Doing'),
         ('t', 'Testing'),
         ('d', 'Done'),
     ]
@@ -64,7 +64,7 @@ class CommentTask(models.Model):
     user = models.CharField(max_length=50)
     comment = models.TextField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
-    time = models.FloatField(verbose_name='Время выполнения задачи в часах')
+    time = models.FloatField(verbose_name='Time complete')
 
     def __str__(self):
         return self.user
