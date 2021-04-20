@@ -95,7 +95,7 @@ class ClientAdmin(BaseModelAdmin):
         default_permissions = self.dict_default_permissions(app_label, model_name)
 
         result = []
-        if default_permissions['change'] in user_permissions:
+        if default_permissions['change'] or default_permissions['view'] in user_permissions:
             for project in obj.project.all():
                 link_url = reverse(view_name, args=[project.pk])
                 result.append('<a href="{}">{}</a>'.format(link_url, project.title))
