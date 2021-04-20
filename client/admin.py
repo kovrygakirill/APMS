@@ -16,7 +16,7 @@ class BaseModelAdmin(admin.ModelAdmin):
         return {
             'view': f'{app_label}.view_{model_name}',
             'delete': f'{app_label}.delete_{model_name}',
-            'create': f'{app_label}.create_{model_name}',
+            'add': f'{app_label}.add_{model_name}',
             'change': f'{app_label}.change_{model_name}'
         }
 
@@ -25,7 +25,7 @@ class BaseModelAdmin(admin.ModelAdmin):
         return {
             'view': f'admin:{app_label}_{model_name}_view',
             'delete': f'admin:{app_label}_{model_name}_delete',
-            'create': f'admin:{app_label}_{model_name}_create',
+            'add': f'admin:{app_label}_{model_name}_add',
             'change': f'admin:{app_label}_{model_name}_change',
         }
 
