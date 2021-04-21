@@ -69,9 +69,9 @@ class BaseModelAdmin(admin.ModelAdmin):
         result = []
         if default_permissions['change'] or default_permissions['view'] in user_permissions:
             link_url = reverse(view_name, args=[obj.pk])
-            result.append('<a href="{}">{}</a>'.format(link_url, obj.title))
+            result.append('<a href="{}">{}</a>'.format(link_url, obj))
         else:
-            result.append('{}'.format(obj.title))
+            result.append('{}'.format(obj))
 
         return format_html("<br / >".join(result))
 
