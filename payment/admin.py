@@ -11,7 +11,7 @@ class PaymentAdmin(BaseModelAdmin):
     fields = ['comment', 'price', 'project']
     search_fields = ['project__title']
     ordering = ['project']
-    list_display = ['comment', 'get_price_in_dollar', 'get_projects', 'default_actions']
+    list_display = ['comment', 'get_price_in_dollar', 'get_project', 'default_actions']
     list_filter = ('project', ('price', RangeNumericFilter), )
 
     def get_price_in_dollar(self, obj):
@@ -19,24 +19,10 @@ class PaymentAdmin(BaseModelAdmin):
 
     get_price_in_dollar.short_description = 'price'
 
-    def get_projects(self, obj):
-        app_label = self.get_app_label_obj(obj.project)
-        model_name = self.get_model_name_obj(obj.project)
-        view_name = f'admin:{app_label}_{model_name}_change'
+    def get_project(self, obj):
+        return self.get_link_to_obj(obj.project)
 
-        user_permissions = self.get_user_permissions()
-        default_permissions = self.dict_default_permissions(app_label, model_name)
-
-        result = []
-        if default_permissions['change'] or default_permissions['view'] in user_permissions:
-            link_url = reverse(view_name, args=[obj.project.pk])
-            result.append('<a href="{}">{}</a>'.format(link_url, obj.project.title))
-        else:
-            result.append('{}'.format(obj.project.title))
-
-        return format_html("<br / >".join(result))
-
-    get_projects.short_description = 'proect'
+    get_project.short_description = 'proect'
 
     BaseModelAdmin.default_actions.short_description = 'actions'
 
