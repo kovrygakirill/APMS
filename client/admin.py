@@ -58,6 +58,23 @@ class BaseModelAdmin(admin.ModelAdmin):
 
         return format_html('{} &nbsp; {}', html_delete_action, html_change_action)
 
+    def get_link_to_obj(self, obj):
+        app_label = self.get_app_label_obj(obj)
+        model_name = self.get_model_name_obj(obj)
+        view_name = f'admin:{app_label}_{model_name}_change'
+
+        user_permissions = self.get_user_permissions()
+        default_permissions = self.dict_default_permissions(app_label, model_name)
+
+        result = []
+        if default_permissions['change'] or default_permissions['view'] in user_permissions:
+            link_url = reverse(view_name, args=[obj.pk])
+            result.append('<a href="{}">{}</a>'.format(link_url, obj.title))
+        else:
+            result.append('{}'.format(obj.title))
+
+        return format_html("<br / >".join(result))
+
 
 class ProjectInstanceInline(admin.TabularInline):
     model = Project
