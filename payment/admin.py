@@ -38,10 +38,7 @@ class PaymentAdmin(BaseModelAdmin):
 
     get_projects.short_description = 'proect'
 
-    def default_actions(self, obj):
-        return BaseModelAdmin.default_actions(self, obj)
-
-    default_actions.short_description = 'actions'
+    BaseModelAdmin.default_actions.short_description = 'actions'
 
 
 admin.site.register(Payment, PaymentAdmin)
