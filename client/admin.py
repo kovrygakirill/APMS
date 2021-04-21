@@ -52,6 +52,12 @@ class BaseModelAdmin(admin.ModelAdmin):
 
         return result
 
+    def default_actions(self, obj):
+        html_delete_action = self.get_html_action(obj, action='delete')
+        html_change_action = self.get_html_action(obj, action='change')
+
+        return format_html('{} &nbsp; {}', html_delete_action, html_change_action)
+
 
 class ProjectInstanceInline(admin.TabularInline):
     model = Project
@@ -108,10 +114,7 @@ class ClientAdmin(BaseModelAdmin):
     get_projects.short_description = 'proects'
 
     def default_actions(self, obj):
-        html_delete_action = self.get_html_action(obj, action='delete')
-        html_change_action = self.get_html_action(obj, action='change')
-
-        return format_html('{} &nbsp; {}', html_delete_action, html_change_action)
+        return BaseModelAdmin.default_actions(self, obj)
 
     default_actions.short_description = 'actions'
 
