@@ -61,13 +61,14 @@ class CommentTask(models.Model):
     ]
 
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comment_task')
-    user = models.CharField(max_length=50)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_task', verbose_name='Appointed by')
     comment = models.TextField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
     time = models.FloatField(verbose_name='Time complete')
 
     def __str__(self):
-        return self.user
+        comm = self.comment[0:30]
+        return comm + " ..." if len(comm) == 30 else comm
 
 
 # class Image(models.Model):
