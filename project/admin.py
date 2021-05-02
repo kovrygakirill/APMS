@@ -29,7 +29,6 @@ class BaseTaskAdmin:
         return date_time.strftime("%Y-%m-%d %H:%M")
 
 
-
 class TaskInstanceInline(admin.TabularInline, BaseTaskAdmin):
     model = Task
     extra = 0
@@ -111,9 +110,61 @@ class ProjectAdmin(BaseModelAdmin):
     BaseModelAdmin.default_actions.short_description = 'actions'
 
 
+class BaseCommentAdmin:
+    def get_comment(self, obj):
+        comm = obj.comment[0:30]
+        return comm + " ..." if len(comm) == 30 else comm
+
+    get_comment.short_description = 'comment'
+
+    def get_time(self, obj):
+        return f'{obj.time} {"hour" if obj.time in [0, 1] else "hours"}'
+
+    get_time.short_description = 'time complete'
+
+
+class CommentTaskAdmin(BaseModelAdmin, BaseCommentAdmin):
+    fields = ['task', 'comment', 'user', 'status', 'time']
+    search_fields = ['comment']
+    ordering = ['time']
+    list_display = ['get_comment', 'get_task', 'get_user', 'status', 'get_time', 'default_actions']
+
+    list_filter = ('task', 'user', ('time', RangeNumericFilter), 'status')
+
+    def get_user(self, obj):
+        return self.get_link_to_obj(obj.user)
+
+    get_user.short_description = 'appointed by'
+
+    def get_task(self, obj):
+        return self.get_link_to_obj(obj.task)
+
+    get_task.short_description = 'Task'
+
+
+class CommentTaskInstanceInline(admin.TabularInline, BaseCommentAdmin):
+    model = CommentTask
+    extra = 1
+
+    fields = ['task', 'comment', 'user', 'status', 'time']
+
+    # readonly_fields = ['task', 'comment', 'user', 'status', 'time']
+    # list_filter = ('title', 'status')
+
+    def has_add_permission(self, request, obj=None):
+        return True
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 class TaskAdmin(BaseModelAdmin, BaseTaskAdmin):
     fields = ['title', 'project', 'user', 'description', ('start_datetime', 'release_datetime'), 'total_time',
               'type', 'status', ]
+    inlines = [CommentTaskInstanceInline, ]
     search_fields = ['title']
     ordering = ['title']
     list_display = ['title', 'get_project', 'get_user', 'get_start_datetime', 'get_finish_datetime', 'get_total_time',
@@ -136,4 +187,4 @@ class TaskAdmin(BaseModelAdmin, BaseTaskAdmin):
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Task, TaskAdmin)
-admin.site.register(CommentTask)
+admin.site.register(CommentTask, CommentTaskAdmin)
