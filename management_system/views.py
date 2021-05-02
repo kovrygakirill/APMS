@@ -1,4 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+
+def admin_site(request):
+    return redirect("/admin/")
 
 
 def error_404(request):
