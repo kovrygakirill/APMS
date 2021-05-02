@@ -15,14 +15,19 @@ class BaseTaskAdmin:
     get_total_time.short_description = 'total time complete'
 
     def get_start_datetime(self, obj):
-        return obj.start_datetime
+        return self.parse_datetime(obj.start_datetime)
 
     get_start_datetime.short_description = 'start'
 
     def get_finish_datetime(self, obj):
-        return obj.release_datetime
+        return self.parse_datetime(obj.release_datetime)
 
     get_finish_datetime.short_description = 'planned finish'
+
+    @staticmethod
+    def parse_datetime(date_time):
+        return date_time.strftime("%Y-%m-%d %H:%M")
+
 
 
 class TaskInstanceInline(admin.TabularInline, BaseTaskAdmin):
