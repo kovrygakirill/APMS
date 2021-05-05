@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'client',
     'payment',
     'project',
+    'user_profile',
 ]
 
 MIDDLEWARE = [
