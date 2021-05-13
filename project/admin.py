@@ -6,6 +6,7 @@ from payment.admin import BasePaymentAdmin
 from client.admin import BaseModelAdmin
 from rangefilter.filters import DateRangeFilter
 from admin_numeric_filter.admin import RangeNumericFilter
+from client.admin import BaseTabularInlineAdmin
 
 
 class BaseTaskAdmin:
@@ -29,14 +30,26 @@ class BaseTaskAdmin:
         return date_time.strftime("%Y-%m-%d %H:%M")
 
 
-class TaskInstanceInline(admin.TabularInline, BaseTaskAdmin):
+class TaskInstanceInline(BaseTabularInlineAdmin, BaseTaskAdmin):
     model = Task
     extra = 0
 
-    fields = ['title', 'user', 'get_start_datetime', 'get_finish_datetime', 'get_total_time', 'type', 'status', ]
-    readonly_fields = ['title', 'user', 'get_start_datetime', 'get_finish_datetime', 'get_total_time',
+    fields = ['get_task_link', 'get_user_link', 'get_start_datetime', 'get_finish_datetime', 'get_total_time', 'type', 'status', ]
+    readonly_fields = ['get_task_link', 'get_user_link', 'get_start_datetime', 'get_finish_datetime', 'get_total_time',
                        'type', 'status', ]
-    list_filter = ('title', 'status')
+    ordering = ['start_datetime', 'release_datetime']
+
+    def get_task_link(self, obj):
+        return self.get_link_to_obj(obj)
+
+    get_task_link.short_description = 'Name'
+
+
+    def get_user_link(self, obj):
+        return self.get_link_to_obj(obj.user)
+
+    get_user_link.short_description = 'Appointed by'
+
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -45,11 +58,16 @@ class TaskInstanceInline(admin.TabularInline, BaseTaskAdmin):
         return False
 
 
-class PaymentInstanceInline(admin.TabularInline, BasePaymentAdmin):
+class PaymentInstanceInline(BaseTabularInlineAdmin, BasePaymentAdmin):
     model = Payment
     extra = 0
-    fields = ['comment', 'get_price_in_dollar', 'project']
-    readonly_fields = ['comment', 'get_price_in_dollar', 'project']
+    fields = ['get_payment_link', 'get_price_in_dollar', 'project']
+    readonly_fields = ['get_payment_link', 'get_price_in_dollar', 'project']
+
+    def get_payment_link(self, obj):
+        return self.get_link_to_obj(obj)
+
+    get_payment_link.short_description = 'Comment'
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -142,11 +160,12 @@ class CommentTaskAdmin(BaseModelAdmin, BaseCommentAdmin):
     get_task.short_description = 'Task'
 
 
-class CommentTaskInstanceInline(admin.TabularInline, BaseCommentAdmin):
+class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
     model = CommentTask
     extra = 1
 
     fields = ['task', 'comment', 'user', 'status', 'time']
+    show_change_link = True
 
     # readonly_fields = ['task', 'comment', 'user', 'status', 'time']
     # list_filter = ('title', 'status')
