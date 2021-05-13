@@ -4,12 +4,14 @@ from django.utils.html import format_html
 from django.urls import reverse
 from project.models import Project
 
+from abc import *
 
-class BaseModelAdmin(admin.ModelAdmin):
+
+class BaseAdminClass:
+
+    @abstractmethod
     def get_queryset(self, request):
-        qs = super(BaseModelAdmin, self).get_queryset(request)
-        self.request = request
-        return qs
+        raise NotImplementedError()
 
     @staticmethod
     def dict_default_permissions(app_label, model_name):
@@ -76,10 +78,31 @@ class BaseModelAdmin(admin.ModelAdmin):
         return format_html("<br / >".join(result))
 
 
-class ProjectInstanceInline(admin.TabularInline):
+class BaseModelAdmin(admin.ModelAdmin, BaseAdminClass):
+    def get_queryset(self, request):
+        qs = super(BaseModelAdmin, self).get_queryset(request)
+        self.request = request
+        return qs
+
+
+class BaseTabularInlineAdmin(admin.TabularInline, BaseAdminClass):
+    def get_queryset(self, request):
+        qs = super(BaseTabularInlineAdmin, self).get_queryset(request)
+        self.request = request
+        return qs
+
+
+class ProjectInstanceInline(BaseTabularInlineAdmin):
     model = Project
     extra = 0
-    readonly_fields = ['client', 'title', 'description', 'start_date', 'release_date', 'status']
+    fields = ['get_project_link', 'description', 'start_date', 'release_date', 'status']
+    readonly_fields = ['get_project_link', 'description', 'start_date', 'release_date', 'status']
+    ordering = ['start_date', 'release_date']
+
+    def get_project_link(self, obj):
+        return self.get_link_to_obj(obj)
+
+    get_project_link.short_description = 'proect'
 
     def has_add_permission(self, request, obj=None):
         return False
@@ -89,20 +112,13 @@ class ProjectInstanceInline(admin.TabularInline):
 
 
 class ClientAdmin(BaseModelAdmin):
-    fields = ['title', 'description', 'get_projects']
+    fields = ['title', 'description', ]
     inlines = [ProjectInstanceInline]
     readonly_fields = ('get_projects',)
-    # fieldsets = (
-    #     (None, {
-    #         'fields': ('title', 'description', 'get_projects')
-    #     }),
-    # )
     search_fields = ['title']
     ordering = ['title', ]
     list_display = ['related_title', 'description', 'get_projects', 'default_actions']
     list_filter = ('title',)
-
-    # exclude = ('get_projects', )
 
     def related_title(self, obj):
         return obj.title
