@@ -9,6 +9,26 @@ from admin_numeric_filter.admin import RangeNumericFilter
 from client.admin import BaseTabularInlineAdmin
 
 
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from django import forms
+
+
+class TaskAdminForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorUploadingWidget())
+
+    class Meta:
+        model = Task
+        fields = '__all__'
+
+
+class CommentTaskAdminForm(forms.ModelForm):
+    comment = forms.CharField(widget=CKEditorUploadingWidget())
+
+    class Meta:
+        model = CommentTask
+        fields = '__all__'
+
+
 class BaseTaskAdmin:
     def get_total_time(self, obj):
         return f'{obj.total_time} {"hour" if obj.total_time in [0, 1] else "hours"}'
@@ -142,6 +162,7 @@ class BaseCommentAdmin:
 
 
 class CommentTaskAdmin(BaseModelAdmin, BaseCommentAdmin):
+    form = CommentTaskAdminForm
     fields = ['task', 'comment', 'user', 'status', 'time']
     search_fields = ['comment']
     ordering = ['time']
@@ -161,6 +182,7 @@ class CommentTaskAdmin(BaseModelAdmin, BaseCommentAdmin):
 
 
 class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
+    form = CommentTaskAdminForm
     model = CommentTask
     extra = 1
 
@@ -181,6 +203,7 @@ class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
 
 
 class TaskAdmin(BaseModelAdmin, BaseTaskAdmin):
+    form = TaskAdminForm
     fields = ['title', 'project', 'user', 'description', ('start_datetime', 'release_datetime'), 'total_time',
               'type', 'status', ]
     inlines = [CommentTaskInstanceInline, ]
