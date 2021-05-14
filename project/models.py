@@ -66,6 +66,13 @@ class CommentTask(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
     time = models.FloatField(verbose_name='Time complete')
 
+    def save(self, *args, **kwargs):
+        self.task.status = self.status
+        self.task.user = self.user
+        self.task.total_time += self.time
+        self.task.save()
+        super(CommentTask, self).save(*args, **kwargs)
+
     def __str__(self):
         comm = self.comment[0:30]
         return comm + " ..." if len(comm) == 30 else comm

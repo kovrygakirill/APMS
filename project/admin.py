@@ -177,7 +177,7 @@ class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return True
 
 
 class TaskAdmin(BaseModelAdmin, BaseTaskAdmin):
