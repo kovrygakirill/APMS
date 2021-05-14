@@ -1,6 +1,6 @@
 from django.db import models
 from client.models import Client
-from django.contrib.auth.models import User
+from user_profile.models import UserProfile
 
 
 class Project(models.Model):
@@ -39,7 +39,7 @@ class Task(models.Model):
     ]
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='task')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task', verbose_name='Appointed by')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='task', verbose_name='Appointed by')
     title = models.CharField(max_length=50, verbose_name='Name of task')
     description = models.TextField()
     start_datetime = models.DateTimeField(verbose_name='Start task')
@@ -61,7 +61,7 @@ class CommentTask(models.Model):
     ]
 
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comment_task')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment_task', verbose_name='Appointed by')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comment_task', verbose_name='Appointed by')
     comment = models.TextField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
     time = models.FloatField(verbose_name='Time complete')
