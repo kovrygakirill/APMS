@@ -1,6 +1,6 @@
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 from django.conf.urls import url
 from django.views.static import serve
 
@@ -11,6 +11,7 @@ import management_system.admin
 urlpatterns = [
     url(r'^$', admin_site, name="admin_site"),
     path('admin/', admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     url(r'^(?!media).*$', error_404, name="404")
 ]
