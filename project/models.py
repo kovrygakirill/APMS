@@ -18,6 +18,11 @@ class Project(models.Model):
     release_date = models.DateField(verbose_name='Finish')
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
 
+    def get_description(self):
+        return self.description[:10] + " ..." if len(self.description) >= 30 else self.description
+
+    get_description.short_description = 'description'
+
     def __str__(self):
         return self.title
 
@@ -48,6 +53,11 @@ class Task(models.Model):
     type = models.CharField(max_length=1, choices=TYPE_CHOICES)
     status = models.CharField(max_length=1, choices=STATUS_CHOICES)
 
+    def get_description(self):
+        return self.description[:30] + " ..." if len(self.description) >= 30 else self.description
+
+    get_description.short_description = 'description'
+
     def __str__(self):
         return self.title
 
@@ -59,7 +69,6 @@ class CommentTask(models.Model):
         ('t', 'Testing'),
         ('d', 'Done'),
     ]
-
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comment_task')
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='comment_task', verbose_name='Appointed by')
     comment = models.TextField()
@@ -73,9 +82,13 @@ class CommentTask(models.Model):
         self.task.save()
         super(CommentTask, self).save(*args, **kwargs)
 
+    def get_comment(self):
+        return self.comment[:30] + " ..." if len(self.comment) >= 30 else self.comment
+
+    get_comment.short_description = 'comment'
+
     def __str__(self):
-        comm = self.comment[0:30]
-        return comm + " ..." if len(comm) == 30 else comm
+        return self.get_comment()
 
 
 # class Image(models.Model):
