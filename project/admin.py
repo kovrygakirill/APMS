@@ -149,11 +149,6 @@ class ProjectAdmin(BaseModelAdmin):
 
 
 class BaseCommentAdmin:
-    def get_comment(self, obj):
-        comm = obj.comment[0:30]
-        return comm + " ..." if len(comm) == 30 else comm
-
-    get_comment.short_description = 'comment'
 
     def get_time(self, obj):
         return f'{obj.time} {"hour" if obj.time in [0, 1] else "hours"}'

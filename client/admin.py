@@ -107,8 +107,8 @@ class BaseTabularInlineAdmin(admin.TabularInline, BaseAdminClass):
 class ProjectInstanceInline(BaseTabularInlineAdmin):
     model = Project
     extra = 0
-    fields = ['get_project_link', 'description', 'start_date', 'release_date', 'status']
-    readonly_fields = ['get_project_link', 'description', 'start_date', 'release_date', 'status']
+    fields = ['get_project_link', 'get_description', 'start_date', 'release_date', 'status']
+    readonly_fields = ['get_project_link', 'get_description', 'start_date', 'release_date', 'status']
     ordering = ['start_date', 'release_date']
 
     def get_project_link(self, obj):
@@ -129,7 +129,7 @@ class ClientAdmin(BaseModelAdmin):
     readonly_fields = ('get_projects',)
     search_fields = ['title']
     ordering = ['title', ]
-    list_display = ['related_title', 'description', 'get_projects', 'default_actions']
+    list_display = ['related_title', 'get_description', 'get_projects', 'default_actions']
     list_filter = ('title',)
 
     def related_title(self, obj):
