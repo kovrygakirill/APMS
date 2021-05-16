@@ -176,15 +176,14 @@ class CommentTaskAdmin(BaseModelAdmin, BaseCommentAdmin):
     get_task.short_description = 'Task'
 
 
-class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
+class AddCommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
+    verbose_name = 'Add Comment'
+    verbose_name_plural = 'Add Comment Task'
+
     model = CommentTask
     extra = 1
 
     fields = ['task', 'comment', 'user', 'status', 'time']
-    show_change_link = True
-
-    # readonly_fields = ['task', 'comment', 'user', 'status', 'time']
-    # list_filter = ('title', 'status')
 
     def has_add_permission(self, request, obj=None):
         return True
@@ -193,14 +192,36 @@ class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None):
-        return True
+        return False
+
+    def has_view_permission(self, request, obj=None):
+        return False
+
+
+class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
+    model = CommentTask
+
+    fields = ['task', 'get_comment', 'user', 'status', 'get_time']
+    show_change_link = True
+
+    readonly_fields = ['task', 'get_comment', 'user', 'status', 'get_time']
+    # list_filter = ('title', 'status')
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 class TaskAdmin(BaseModelAdmin, BaseTaskAdmin):
     form = TaskAdminForm
     fields = ['title', 'project', 'user', 'description', ('start_datetime', 'release_datetime'), 'total_time',
               'type', 'status', ]
-    inlines = [CommentTaskInstanceInline, ]
+    inlines = [CommentTaskInstanceInline, AddCommentTaskInstanceInline, ]
     search_fields = ['title']
     ordering = ['title']
     list_display = ['title', 'get_project', 'get_user', 'get_start_datetime', 'get_finish_datetime', 'get_total_time',
