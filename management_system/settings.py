@@ -213,5 +213,8 @@ CKEDITOR_CONFIGS = {
             'dialogui',
             'elementspath'
         ]),
+        'height': '100%',
+        'width': '100%',
+        'toolbarCanCollapse': False,
     }
 }
