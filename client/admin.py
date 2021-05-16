@@ -4,6 +4,8 @@ from django.utils.html import format_html
 from django.urls import reverse
 from project.models import Project
 
+from django.forms import TextInput, Textarea
+from django.db import models
 from abc import *
 
 
@@ -79,6 +81,11 @@ class BaseAdminClass:
 
 
 class BaseModelAdmin(admin.ModelAdmin, BaseAdminClass):
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '30'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 5, 'cols': 55})},
+    }
+
     def get_queryset(self, request):
         qs = super(BaseModelAdmin, self).get_queryset(request)
         self.request = request
@@ -86,6 +93,11 @@ class BaseModelAdmin(admin.ModelAdmin, BaseAdminClass):
 
 
 class BaseTabularInlineAdmin(admin.TabularInline, BaseAdminClass):
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '30'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 5, 'cols': 55})},
+    }
+
     def get_queryset(self, request):
         qs = super(BaseTabularInlineAdmin, self).get_queryset(request)
         self.request = request
