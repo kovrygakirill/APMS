@@ -201,11 +201,17 @@ class AddCommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
 class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
     model = CommentTask
 
-    fields = ['task', 'get_comment', 'user', 'status', 'get_time']
+    fields = ['task', 'get_comment', 'get_user', 'status', 'get_time']
     show_change_link = True
 
-    readonly_fields = ['task', 'get_comment', 'user', 'status', 'get_time']
+    readonly_fields = ['task', 'get_comment', 'get_user', 'status', 'get_time']
     # list_filter = ('title', 'status')
+
+    def get_user(self, obj):
+        return self.get_link_to_obj(obj.user)
+
+    get_user.short_description = 'Appointed by'
+
 
     def has_add_permission(self, request, obj=None):
         return False
