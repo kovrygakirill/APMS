@@ -177,7 +177,6 @@ class CommentTaskAdmin(BaseModelAdmin, BaseCommentAdmin):
 
 
 class CommentTaskInstanceInline(BaseTabularInlineAdmin, BaseCommentAdmin):
-    form = CommentTaskAdminForm
     model = CommentTask
     extra = 1
 
