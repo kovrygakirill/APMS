@@ -88,31 +88,31 @@ class BaseModelAdmin(admin.ModelAdmin, BaseAdminClass):
         models.TextField: {'widget': Textarea(attrs={'rows': 5, 'cols': 55})},
     }
 
-    def response_change(self, request, obj):
-        msg_dict = {
-            'name': obj._meta.verbose_name,
-            'obj': str(obj),
-        }
-
-        if "_saveasnew" in request.POST:
-            msg = format_html(
-                ('The {name} “{obj}” was added successfully. You may edit it again below.'),
-                **msg_dict
-            )
-        elif "_addanother" in request.POST:
-            msg = format_html(
-                ('The {name} “{obj}” was changed successfully. You may add another {name} below.'),
-                **msg_dict
-            )
-        else:
-            msg = format_html(
-                ('The {name} “{obj}” was changed successfully.'),
-                **msg_dict
-            )
-
-        self.message_user(request, msg, 25)
-
-        return redirect(request.path)
+    # def response_change(self, request, obj):
+    #     msg_dict = {
+    #         'name': obj._meta.verbose_name,
+    #         'obj': str(obj),
+    #     }
+    #
+    #     if "_saveasnew" in request.POST:
+    #         msg = format_html(
+    #             ('The {name} “{obj}” was added successfully. You may edit it again below.'),
+    #             **msg_dict
+    #         )
+    #     elif "_addanother" in request.POST:
+    #         msg = format_html(
+    #             ('The {name} “{obj}” was changed successfully. You may add another {name} below.'),
+    #             **msg_dict
+    #         )
+    #     else:
+    #         msg = format_html(
+    #             ('The {name} “{obj}” was changed successfully.'),
+    #             **msg_dict
+    #         )
+    #
+    #     self.message_user(request, msg, 25)
+    #
+    #     return redirect(request.path)
 
     def get_queryset(self, request):
         qs = super(BaseModelAdmin, self).get_queryset(request)
