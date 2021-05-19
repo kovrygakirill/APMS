@@ -57,7 +57,7 @@ class TaskInstanceInline(BaseTabularInlineAdmin, BaseTaskAdmin):
     fields = ['get_task_link', 'get_user_link', 'get_start_datetime', 'get_finish_datetime', 'get_total_time', 'type', 'status', ]
     readonly_fields = ['get_task_link', 'get_user_link', 'get_start_datetime', 'get_finish_datetime', 'get_total_time',
                        'type', 'status', ]
-    ordering = ['start_datetime', 'release_datetime']
+    ordering = ['-start_datetime']
 
     def get_task_link(self, obj):
         return self.get_link_to_obj(obj)
@@ -109,7 +109,7 @@ class ProjectAdmin(BaseModelAdmin):
         }),
     )
     search_fields = ['title']
-    ordering = ['title']
+    ordering = ['-start_date']
     list_display = ['get_project', 'get_client', 'start_date', 'get_finish_date', 'status',
                     'default_actions']
     list_filter = ('client', ('start_date', DateRangeFilter), ('release_date', DateRangeFilter), 'status')
@@ -160,7 +160,6 @@ class CommentTaskAdmin(BaseModelAdmin, BaseCommentAdmin):
     form = CommentTaskAdminForm
     fields = ['task', 'comment', 'user', 'status', 'time']
     search_fields = ['comment']
-    ordering = ['time']
     list_display = ['get_comment', 'get_task', 'get_user', 'status', 'get_time', 'default_actions']
 
     list_filter = ('task', 'user', ('time', RangeNumericFilter), 'status')
@@ -229,7 +228,7 @@ class TaskAdmin(BaseModelAdmin, BaseTaskAdmin):
               'type', 'status', ]
     inlines = [CommentTaskInstanceInline, AddCommentTaskInstanceInline, ]
     search_fields = ['title']
-    ordering = ['title']
+    ordering = ['-start_datetime']
     list_display = ['title', 'get_project', 'get_user', 'get_start_datetime', 'get_finish_datetime', 'get_total_time',
                     'type', 'status', 'default_actions']
     list_filter = ('project', 'user', ('total_time', RangeNumericFilter),
