@@ -804,7 +804,8 @@ table#change-history tbody th {
 /* COLUMN TYPES */
 
 .colMS {
-    margin-right: 300px;
+    margin-left: 15%;
+    /*margin-right: 200px;*/
 }
 
 .colSM {
