@@ -246,6 +246,27 @@ class TaskAdmin(BaseModelAdmin, BaseTaskAdmin):
 
     BaseModelAdmin.default_actions.short_description = 'actions'
 
+    def settings_model_fields(self, obj):
+        app_label = self.get_app_label_obj(obj)
+        model_name = self.get_model_name_obj(obj)
+
+        user_permissions = self.get_user_permissions()
+        default_permissions = self.dict_default_permissions(app_label, model_name)
+
+        if default_permissions['change'] not in user_permissions:
+            TaskAdmin.fields = ['title', 'project', 'user', 'description',
+                                ('get_start_datetime', 'get_finish_datetime'),
+                                'total_time', 'type', 'status', ]
+            TaskAdmin.readonly_fields = ['title', 'project', 'user', 'description',
+                                         'get_start_datetime', 'get_finish_datetime',
+                                         'total_time', 'type', 'status', ]
+
+    def has_change_permission(self, request, obj=None):
+        if obj:
+            self.settings_model_fields(obj)
+
+        return True
+
 
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Task, TaskAdmin)
